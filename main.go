@@ -7,40 +7,29 @@ import (
 	"time"
 )
 
-func main() {
-	workerPool := worker_pool.NewWorkerPool()
+func main() { // time.sleep for comfort view of output, if you don't like it remove it
+	workerPool := worker_pool.NewWorkerPool(0)
 
-	// Стартуем несколько воркеров
-	workerPool.StartWorker(1)
-	time.Sleep(time.Second * 2)
-	workerPool.StartWorker(2)
-	workerPool.StartWorker(3)
-	workerPool.StartWorker(4)
-	workerPool.StartWorker(5)
+	workerPool.SetWorkersCount(6) // start with 6 workers
+	time.Sleep(time.Second)
 
-	// Добавляем задачи
 	for i := 0; i < 100; i++ {
-		workerPool.TaskChan <- "task №" + strconv.Itoa(i)
+		workerPool.AddTask("task №" + strconv.Itoa(i)) // add task
 	}
-	time.Sleep(time.Second)
 
-	// Динамически добавляем воркера
-	workerPool.StartWorker(3)
+	workerPool.StartWorker() // dynamically add worker
+
+	time.Sleep(time.Second)
 	for i := 100; i < 150; i++ {
-		workerPool.TaskChan <- "task №" + strconv.Itoa(i)
+		workerPool.AddTask("task №" + strconv.Itoa(i)) // more tasks :)
 	}
 
-	// Динамически удаляем воркера
-	workerPool.StopWorker(1)
+	workerPool.StopWorker(1) // dynamically delete worker with ID 1
 	fmt.Println("Worker №1 was deleted.")
+	time.Sleep(time.Second * 2)
 
-	time.Sleep(time.Second * 10)
-
-	// Завершаем оставшиеся задачи
-	for i := 150; i < 1000; i++ {
-		workerPool.TaskChan <- "task №" + strconv.Itoa(i)
+	for i := 150; i < 300; i++ {
+		workerPool.AddTask("task №" + strconv.Itoa(i))
 	}
-
-	time.Sleep(time.Second)
-	close(workerPool.TaskChan)
+	time.Sleep(time.Second * 5)
 }
