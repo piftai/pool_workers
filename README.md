@@ -8,13 +8,17 @@
 Структура Worker имеет атрибуты id, active, quitChan.
 
 
+func NewWorkerPool(capChan int) - создает worker pool с размером буфера канала capChan (при capChan <= 0 размер по умолчанию 1000)
+
 func (p *WorkerPool) StartWorker() - запускает воркера
 
-func (p *WorkerPool) StopWorker(id int) - останавливает воркера с переданным id
+func (p *WorkerPool) StopWorker() - останавливает одного воркера
 
 func (p *WorkerPool) SetWorkersCount(n int) - для первоначального запуска воркер пула с n воркерами, либо для удаления лишних воркеров
 
 func (p *WorkerPool) AddTask(task string) - для добавления задач в канал
+
+func (p *WorkerPool) Shutdown() - завершает работу worker pool
 
 # Работа main.go
 
